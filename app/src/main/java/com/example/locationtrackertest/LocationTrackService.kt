@@ -22,14 +22,11 @@ import com.google.android.gms.location.LocationResult
 
 
 class LocationTrackService : Service() {
-    override fun onBind(intent: Intent?): IBinder? {
-       return binder
-    }
+
 
     var isFirstTime = true
     var isTrackingLocation = false
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private val binder: IBinder = LocalBinder()
     lateinit var serviceMessenger: Messenger
 
     override fun onCreate() {
@@ -53,13 +50,17 @@ class LocationTrackService : Service() {
                         statService()
                 }
 
-                Constant.PAUSE -> {
+                Constant.STOP -> {
                     pauseService()
                 }
 
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        TODO("Not yet implemented")
     }
 
 
@@ -125,6 +126,7 @@ class LocationTrackService : Service() {
 
     private fun pauseService() {
         isTrackingLocation = false
+        updateLocationTracking(false)
     }
 
     private val locationCallback = object : LocationCallback() {
@@ -135,8 +137,7 @@ class LocationTrackService : Service() {
                     for(location in locations) {
                         val msg: Message = Message.obtain()
                         val bundle = Bundle()
-                        bundle.putDouble("latitude", location.latitude)
-                        bundle.putDouble("longitude", location.longitude)
+                        bundle.putParcelable("location_coord",location)
                         msg.setData(bundle)
                         try {
                             serviceMessenger.send(msg)
@@ -149,10 +150,6 @@ class LocationTrackService : Service() {
         }
     }
 
-    internal class LocalBinder : Binder() {
-        fun getService(): LocalBinder {
-            return this
-        }
-    }
+
 
 }

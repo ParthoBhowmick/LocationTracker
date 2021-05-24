@@ -11,7 +11,7 @@ object Constant {
     const val MARKER_COLOR = BitmapDescriptorFactory.HUE_MAGENTA
 
     const val POLYLINE_WIDTH = 8f
-    const val MAP_ZOOM = 20f
+    const val MAP_ZOOM = 16f
 
     const val START_RESUME = "start_or_resume"
     const val STOP = "stop"
